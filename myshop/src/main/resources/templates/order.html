@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Заказ</title>
+    <style>
+        ul, li{
+            list-style: none;
+        }
+        .products{
+            width: 70%;
+            margin: 10px auto;
+        }
+        .products__ul-flex{
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+        .products__item-block{
+            width: 300px;
+            margin: 15px;
+        }
+        .products__text{
+            height: 30px;
+            overflow: hidden;
+        }
+        .products__total-summ{
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+<!-- В href ссылка на страницу заказов -->
+<a th:href="@{~/orders}" style="float:right;">
+    <b>ЗАКАЗЫ &cudarrr;</b>
+</a>
+<!-- В href ссылка на корзину -->
+<a th:href="@{~/cart/1}" style="float:right;">
+    <b>КОРЗИНА &cudarrr;</b>
+</a>
+<!-- В href ссылка на главную страницу -->
+<a th:href="@{~/myshop}" style="float:right;">
+    <b>ГЛАВНАЯ &cudarrr;</b>
+</a>
+<!-- В if true, если перешли со страницы оформления заказа, false в остальных случаях -->
+<h1 th:if="${afterPurchase} == true" style="text-align:center">Поздравляем! Успешная покупка! &#128578;</h1>
+<h2 th:text="${orderId}"></h2>
+
+<section class="products">
+    <ul class="products__ul-flex">
+        <li th:each="order : ${orders}">
+            <div class="products__item-block">
+                <p>
+                    <a th:href="@{~/myshop/item/{id}(id=${order.itemId})}">
+                        <!-- В src ссылка изображение товара -->
+                        <div>
+                            <img width="100%" height="300" th:src="${order.item.base64Image}">
+                        </div>
+                    </a>
+                </p>
+                <div class="products__text">
+                    <!-- В text название товара -->
+                    <b th:text="${order.item.title}"></b>
+                </div>
+                <div class="products__text">
+                    <!-- В text цена товара -->
+                    <b th:text="${order.item.price}"></b>
+                </div>
+                <div class="products__text">
+                    <!-- В text описание товара -->
+                    <b th:text="${order.item.description}"></b>
+                </div>
+            </div>
+        </li>
+    </ul>
+    <div style="text-align:right">
+        <!-- В text суммарная стоимость заказа -->
+        <!--            <b th:text="...'"></b>-->
+        <div class="products__total-summ">
+            <b th:text="${totalSum}"></b>
+        </div>
+    </div>
+</section>
+
+</body>
+
+</html>

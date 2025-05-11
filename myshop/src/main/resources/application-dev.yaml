@@ -1,0 +1,26 @@
+#postgres
+spring:
+  datasource:
+#    url: jdbc:postgresql://localhost:5432/myshop
+#    username: admin
+#    password: admin
+    driver-class-name: org.postgresql.Driver
+#    dbcp2:
+#      driver-class-name: org.postgresql.Driver
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/myshop
+    username: admin
+    password: admin
+    pool:
+      enabled: true
+      initial-size: 10
+      max-size: 50
+      validation-query: SELECT 1
+#  jpa:
+#    properties:
+#      hibernate:
+#        cache:
+#          use_second_level_cache: true
+#          region:
+#            factory_class: org.hibernate.cache.jcache.JCacheRegionFactory
+#    show-sql: true

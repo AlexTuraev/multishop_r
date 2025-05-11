@@ -1,4 +1,4 @@
-package org.tasks;
+package org.tasks.myshop;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

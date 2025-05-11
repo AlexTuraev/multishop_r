@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Витрина товаров</title>
+    <style>
+        ul, li{
+            list-style: none;
+        }
+        .products{
+        }
+        .products__ul-flex{
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+        .products__item-block{
+            width: 300px;
+            margin: 15px;
+        }
+        .products__text{
+            height: 30px;
+            overflow: hidden;
+        }
+        .products__cart-action{
+            margin: 0 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- В href ссылка на страницу заказов -->
+    <a th:href="@{/orders}" style="float:right;">
+        <b>ЗАКАЗЫ &cudarrr;</b>
+    </a>
+    <!-- В href ссылка на корзину -->
+    <a th:href="@{~/cart/1}" style="float:right;">
+        <b>КОРЗИНА &cudarrr;</b>
+    </a>
+    <table style="width:70%;margin-left:auto;margin-right:auto;">
+        <tr>
+            <td>
+                <form>
+                    <p>
+                        <label for="search">Найти: </label>
+                        <!-- В value значение со строкой поиска товара, если ничего не ищем, то пустая строка -->
+                        <input id="search" style="width:300px;" name="search" th:value="${search}">
+                        <button name="action">&#128269;</button>
+                    </p>
+                    <p>
+                        <label for="sort">Сортировка: </label>
+                        <!-- В selected true, если выбран соответствующий пункт -->
+                        <select id="sort" name="sort" onchange="this.form.submit()">
+                            <option value="NO" th:selected="${sort}==NO">нет</option>
+                            <option value="ALPHA" th:selected="${sort}==ALPHA">по алфавиту</option>
+                            <option value="PRICE" th:selected="${sort}==PRICE">по цене</option>
+                        </select>
+                    </p>
+                    <p>
+                        <label for="pageSize">Число товаров: </label>
+                        <!-- В selected true, если выбран соответствующий пункт -->
+                        <select id="pageSize" name="pageSize" onchange="this.form.submit()">
+                            <option value="5" th:selected="${paging.pageSize==5}">5</option>
+                            <option value="10" th:selected="${paging.pageSize==10}">10</option>
+                            <option value="20" th:selected="${paging.pageSize==20}">20</option>
+                            <option value="50" th:selected="${paging.pageSize==50}">50</option>
+                            <option value="100" th:selected="${paging.pageSize==100}">100</option>
+                        </select>
+                    </p>
+                    <p>
+                    	<!--
+                    		В if true, если выбрана не первая страница.
+                    		В value номер предыдущей страницы.
+                    	-->
+                        <button th:if="${paging.pageNumber > 1}" name="pageNumber" th:value="${paging.pageNumber - 1}">&lt;</button>
+                        <!-- В text номер текущей страницы -->
+                        <span th:text="${'Страница: '+paging.pageNumber}"></span>
+                        <!--
+                    		В if true, если выбрана не последняя страница.
+                    		В value номер следующей страницы.
+                    	-->
+                        <button th:if="${paging.pageNumber < paging.totalPages}" name="pageNumber" th:value="${paging.pageNumber + 1}">&gt;</button>
+                    </p>
+                </form>
+            </td>
+        </tr>
+    </table>
+
+    <section class="products">
+        <ul class="products__ul-flex">
+            <li th:each="itemModel : ${items}">
+                <div class="products__item-block">
+                    <p>
+                        <a th:href="@{myshop/item/{id}(id=${itemModel.item.id})}">
+                            <!-- В src ссылка изображение товара -->
+                            <div>
+                                <img width="100%" height="300" th:src="${itemModel.item.base64Image}">
+                            </div>
+                        </a>
+                    </p>
+                    <div class="products__text">
+                        <!-- В text название товара -->
+                        <b th:text="${itemModel.item.title}"></b>
+                    </div>
+                    <div class="products__text">
+                        <!-- В text цена товара -->
+                        <b th:text="${itemModel.item.price}"></b>
+                    </div>
+                    <div class="products__text">
+                        <!-- В text описание товара -->
+                        <b th:text="${itemModel.item.description}"></b>
+                    </div>
+                </div>
+
+                <div class="products__cart-action">
+                        <!--
+                        В action ссылка на изменение количества товара в корзине.
+                        Передается параметр запроса action=[minus|plus]
+                        -->
+                        <form th:action="@{myshop/item/{id}/changecart (id=${itemModel.item.id})}" method="post">
+                            <button th:if="${itemModel.countInCart} > 0" name="action" value="minus">-</button>
+                            <!-- В text количество товара в корзине -->
+<!--                            <span th:text="..."></span>-->
+                            <span th:text="'в корзине: ' + ${itemModel.countInCart}"></span>
+                            <button name="action" value="plus">+</button>
+                            <!-- В if true, если товар еще не был добавлен в корзину, false, если уже был -->
+                            <button name="action" value="plus" th:if="${itemModel.countInCart} == 0" style="float:right;">В корзину</button>
+                        </form>
+                </div>
+            </li>
+        </ul>
+    </section>
+</body>
+
+</html>
