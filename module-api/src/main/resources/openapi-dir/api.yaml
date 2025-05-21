@@ -17,3 +17,30 @@ paths:
             application/json:
               schema:
                 type: integer
+
+    post:
+      summary: Списание баланса
+      tags:
+        - payment
+      requestBody:
+        description: сумма к оплате
+        content:
+          'application/json':
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: integer
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                type: integer
+        '400':
+          description: Неверный запрос
+          content:
+            application/json:
+              schema:
+                type: integer
