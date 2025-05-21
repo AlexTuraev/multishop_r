@@ -1,0 +1,6 @@
+server:
+  port: 8081
+
+app:
+  payment:
+    balance: 50000
