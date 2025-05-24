@@ -24,4 +24,6 @@ public interface CartService {
 
     Mono<BigDecimal> getTotalSum(Flux<CartEntity> carts);
 
+    BigDecimal getTotalSumList(List<CartEntity> carts);
+
 }

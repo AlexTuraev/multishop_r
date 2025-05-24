@@ -31,3 +31,7 @@ spring:
 #          region:
 #            factory_class: org.hibernate.cache.jcache.JCacheRegionFactory
 #    show-sql: true
+
+app:
+  payment:
+    url: http://localhost:8081/payment/userbalance

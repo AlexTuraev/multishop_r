@@ -98,4 +98,14 @@ public class CartServiceImpl implements CartService {
                 });
     }
 
+    @Override
+    public BigDecimal getTotalSumList(List<CartEntity> carts) {
+        BigDecimal total = BigDecimal.ZERO;
+        for (CartEntity cart : carts) {
+            BigDecimal sumItem = cart.getItem().getPrice().multiply(BigDecimal.valueOf(cart.getCountItem()));
+            total = total.add(sumItem);
+        }
+        return total;
+    }
+
 }
