@@ -45,3 +45,14 @@ create table if not exists orders(
 
 -- changeset alex turaev:2
 CREATE SEQUENCE order_sequence;
+
+-- changeset alex turaev:3
+create table if not exists users(
+                                    id bigserial primary key,
+                                    username varchar(50),
+                                    password varchar(255),
+                                    roles varchar(255)
+    );
+
+-- changeset alex turaev:4
+insert into users (username, password) values ('user', 'password');
