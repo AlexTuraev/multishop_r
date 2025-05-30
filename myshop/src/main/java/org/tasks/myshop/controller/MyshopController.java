@@ -2,6 +2,7 @@ package org.tasks.myshop.controller;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.reactive.result.view.Rendering;
+import org.tasks.myshop.dao.model.UserEntity;
+import org.tasks.myshop.dao.repository.UserRepository;
 import org.tasks.myshop.dto.ItemDto;
 import org.tasks.myshop.exception.SortException;
 import org.tasks.myshop.service.CartService;

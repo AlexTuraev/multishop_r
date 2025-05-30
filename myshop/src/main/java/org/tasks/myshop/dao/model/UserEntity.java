@@ -23,4 +23,7 @@ public class UserEntity {
     private String password;
 
     private String roles;
+
+    @Column("cart_id")
+    private Long cartId;
 }

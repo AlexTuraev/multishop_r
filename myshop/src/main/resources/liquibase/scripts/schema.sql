@@ -51,8 +51,9 @@ create table if not exists users(
                                     id bigserial primary key,
                                     username varchar(50),
                                     password varchar(255),
-                                    roles varchar(255)
+                                    roles varchar(255),
+                                    cart_id bigint
     );
 
 -- changeset alex turaev:4
-insert into users (username, password) values ('user', 'password');
+insert into users (username, password, cart_id) values ('user', 'password', 1);
