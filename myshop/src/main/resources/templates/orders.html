@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Заказы</title>
+</head>
+
+<body>
+<!-- В href ссылка на корзину -->
+<a th:href="@{~/cart/1}" style="float:right;">
+    <b>КОРЗИНА &cudarrr;</b>
+</a>
+<!-- В href ссылка на главную страницу -->
+<a th:href="@{~/myshop}" style="float:right;">
+    <b>ГЛАВНАЯ &cudarrr;</b>
+</a>
+<table style="width:70%;margin-left:auto;margin-right:auto;">
+    <!-- Итерируемся по заказам -->
+    <tr th:each="order : ${orders}">
+        <td>
+            <h2>
+            	<!--
+            		В text номер заказа.
+            		В href ссылка на страницу заказа. 
+            	-->
+                <a th:text="${order.key}" th:href="@{/orders/{id} (id=${order.key})}"></a>
+            </h2>
+            <table>
+                <!-- Итерируемся по товарам в заказе -->
+                <tr th:each="orderItem : ${order.value.getOrders()}">
+                    <!-- В text название товара, количество штук и стоимость -->
+<!--                    кол-во=${orderItem.getCountItem()} + цена=${orderItem.getPrice()}-->
+                    <td th:text="${'Наименование: ' + orderItem.getItem().title + ' кол-во: ' + orderItem.getCountItem() + ' цена: ' + orderItem.getPrice()}"></td>
+                </tr>
+            </table>
+            <p>
+                <!-- В text общая сумма заказа -->
+                <b th:text="${order.value.getTotalSum()}"></b>
+            </p>
+        </td>
+    </tr>
+</table>
+</body>
+
+</html>

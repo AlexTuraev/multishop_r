@@ -7,11 +7,35 @@
     <groupId>org.tasks</groupId>
     <artifactId>multishop_r</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <modules>
+        <module>payment</module>
+        <module>myshop</module>
+        <module>module-api</module>
+    </modules>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <spring-boot.version>3.4.5</spring-boot.version>
+        <openapi-generator-maven-plugin.version>7.13.0</openapi-generator-maven-plugin.version>
+        <spring-boot-starter-data-redis.version>3.2.5</spring-boot-starter-data-redis.version>
+        <spring-boot-starter-security.version>3.4.5</spring-boot-starter-security.version>
+        <spring-boot-starter-oauth2-client.version>3.4.5</spring-boot-starter-oauth2-client.version>
     </properties>
-    
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-parent</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
 </project>

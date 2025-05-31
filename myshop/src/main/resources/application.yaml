@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: myshop
+
+  #dev, test
+  profiles:
+    active: dev
+
+  liquibase:
+    change-log: classpath:liquibase/changelog-master.yml
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10485760
+      max-request-size: 52428800
