@@ -2,10 +2,14 @@ package org.tasks.myshop.service.facade.impl;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.client.RestClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.tasks.myshop.dao.model.OrderEntity;
 import org.tasks.myshop.dto.OrderDto;
@@ -17,6 +21,7 @@ import org.tasks.myshop.service.mapper.CartOrderMapper;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class PurchaseFcdServiceImpl implements PurchaseFcdService {
@@ -24,12 +29,18 @@ public class PurchaseFcdServiceImpl implements PurchaseFcdService {
     @Value("${app.payment.url}")
     private String PAYMENT_URL;
 
+    @Value("${app.payment.uri}")
+    private String PAYMENT_URI;
+
+    private final OAuth2AuthorizedClientManager manager;
+
     private final CartService cartService;
     private final OrderService orderService;
     private final CartOrderMapper cartOrderMapper;
     private final CartMapper cartMapper;
 
-    public PurchaseFcdServiceImpl(CartService cartService, OrderService orderService, CartOrderMapper cartOrderMapper, CartMapper cartMapper) {
+    public PurchaseFcdServiceImpl(OAuth2AuthorizedClientManager manager, CartService cartService, OrderService orderService, CartOrderMapper cartOrderMapper, CartMapper cartMapper) {
+        this.manager = manager;
         this.cartService = cartService;
         this.orderService = orderService;
         this.cartOrderMapper = cartOrderMapper;
@@ -44,13 +55,22 @@ public class PurchaseFcdServiceImpl implements PurchaseFcdService {
         return cartService.getCartsByCartId(cartId)
                 .collectList()
                 .doOnNext(carts -> {
-                    WebClient webClient = WebClient.create(PAYMENT_URL);
-                    Mono<Integer> resBalance;
+                    OAuth2AuthorizedClient client = manager.authorize(OAuth2AuthorizeRequest
+                            .withClientRegistrationId("myshop")
+                            .principal("system")
+                            .build()
+                    );
+                    String accessToken = client.getAccessToken().getTokenValue();
+                    RestClient restClient = RestClient.create(PAYMENT_URL);
+                    Integer resBalance;
                     try {
-                        resBalance = webClient.post()
-                                .bodyValue(new InnerPaymentUserbalancePostRequest(cartService.getTotalSumList(carts).intValue()))
+                        resBalance = restClient.post()
+                                .uri("/payment/userbalance")
+                                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken) // Подставляем токен доступа в заголовок Authorization
+                                .body(Map.of("amount", cartService.getTotalSumList(carts).intValue()))
                                 .retrieve()
-                                .bodyToMono(Integer.class);
+                                .toEntity(Integer.class)
+                                .getBody();
                     }
                     catch (WebClientResponseException.BadRequest e) {
                         e.printStackTrace();

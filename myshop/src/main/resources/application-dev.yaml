@@ -51,4 +51,5 @@ spring:
 
 app:
   payment:
-    url: http://localhost:8280/payment/userbalance
+    url: http://localhost:8280
+    uri: /payment/userbalance

@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.tasks.myshop.service.facade.impl.PurchaseFcdServiceImpl;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/oauth2")
@@ -31,14 +35,26 @@ public class TempExperimentController {
 
         String accessToken = client.getAccessToken().getTokenValue();
 
-//        RestClient restClient = RestClient.create("http://localhost:8280/payment/userbalance");
         RestClient restClient = RestClient.create("http://localhost:8280");
+//        WebClient restClient = WebClient.create("http://localhost:8280");
 
         ResponseEntity<Integer> responseEntity = restClient.get()
                 .uri("/payment/userbalance")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken) // Подставляем токен доступа в заголовок Authorization
                 .retrieve()
                 .toEntity(Integer.class);
+
+        Integer userBalance = responseEntity.getBody();
+
+        var balance = restClient.post()
+                .uri("/payment/userbalance")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken) // Подставляем токен доступа в заголовок Authorization
+                .body(Map.of("amount", 5))
+                .retrieve()
+                .toEntity(Integer.class);
+
+        userBalance = balance.getBody();
+
         System.out.println(responseEntity.getStatusCode());
 
         return responseEntity;
